@@ -10,7 +10,7 @@ import (
 )
 
 // Register the callbacks for the paths exposed by these functions
-func paymentsPaths(b *backend) []*framework.Path {
+func paymentsPaths(b *stellarBackend) []*framework.Path {
 	return []*framework.Path{
 		&framework.Path{
 			Pattern:      "payments",
@@ -42,7 +42,7 @@ func paymentsPaths(b *backend) []*framework.Path {
 }
 
 // Creates a signed transaction with a payment operation.
-func (b *backend) createPayment(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *stellarBackend) createPayment(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 
 	// Validate we didn't get extra fields
 	err := validateFields(req, d)

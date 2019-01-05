@@ -34,7 +34,8 @@ func setupTest(t *testing.T) *testData {
 }
 
 func getTestBackend(t *testing.T) (logical.Backend, logical.Storage) {
-	b := Backend()
+	b := backend()
+
 
 	config := &logical.BackendConfig{
 		System: &logical.StaticSystemView{

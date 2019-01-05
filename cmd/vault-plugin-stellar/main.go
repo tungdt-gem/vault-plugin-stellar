@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tungdt-gem/vault-plugin-stellar/stellar"
+	"github.com/tungdt-gem/vault-plugin-stellar"
 	"log"
 	"os"
 
@@ -12,7 +12,7 @@ import (
 func main() {
 	apiClientMeta := &pluginutil.APIClientMeta{}
 	flags := apiClientMeta.FlagSet()
-	flags.Parse(os.Args[1:])
+	flags.Parse(os.Args[1:]) // Ignore command, strictly parse flags
 
 	tlsConfig := apiClientMeta.GetTLSConfig()
 	tlsProviderFunc := pluginutil.VaultPluginTLSProvider(tlsConfig)
@@ -22,7 +22,7 @@ func main() {
 		TLSProviderFunc:    tlsProviderFunc,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 }
