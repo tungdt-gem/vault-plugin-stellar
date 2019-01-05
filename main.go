@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/tungdt-gem/vault-plugin-stellar/stellar"
 	"log"
 	"os"
 
-	"./stellar"
 	"github.com/hashicorp/vault/helper/pluginutil"
 	"github.com/hashicorp/vault/logical/plugin"
 )
