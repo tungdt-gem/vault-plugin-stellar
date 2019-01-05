@@ -2,6 +2,7 @@ package stellar
 
 import (
 	"context"
+	"log"
 	"testing"
 	"time"
 
@@ -79,6 +80,18 @@ func TestBackend_submitPayment(t *testing.T) {
 	t.Logf("transaction posted in ledger: %v", response.Ledger)
 }
 
+func TestBackend_signSingleTransaction(t *testing.T) {
+	td := setupTest(t)
+	createAccount(td, "testSourceAccount", t)
+
+	txHash := "cef5d9ddb5c85aded808857d5cb8b9bab8fca98a6a7cd124b934d4e78eaa542e"
+
+	respData := signTransaction(td, txHash, []string{"testSourceAccount"}, t)
+
+	t.Logf("Signed Signatures: %v", respData)
+	log.Println("Signed Signatures:", respData)
+}
+
 func TestBackend_submitPaymentUsingChannel(t *testing.T) {
 
 	td := setupTest(t)
@@ -122,6 +135,34 @@ func createAccount(td *testData, accountName string, t *testing.T) {
 		t.Fatal("response is nil")
 	}
 	t.Log(resp.Data)
+}
+
+func signTransaction(td *testData, txHash string, accounts []string, t *testing.T) map[string]interface{} {
+	d :=
+		map[string]interface{}{
+			"txHash":      txHash,
+			"accountIDs":  accounts,
+		}
+	resp, err := td.B.HandleRequest(context.Background(), &logical.Request{
+		Operation: logical.CreateOperation,
+		Path:      fmt.Sprintf("signTransactions"),
+		Data:      d,
+		Storage:   td.S,
+	})
+
+	if err != nil {
+		t.Fatalf("failed to create payment: %v", err)
+	}
+	if resp.IsError() {
+		t.Fatal(resp.Error())
+	}
+	if resp == nil {
+		t.Fatal("response is nil")
+	}
+
+	t.Log(resp.Data)
+
+	return resp.Data
 }
 
 func createPayment(td *testData, sourceAccountName string, destinationAccountName string, amount string, t *testing.T) map[string]interface{} {

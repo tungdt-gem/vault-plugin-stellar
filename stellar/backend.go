@@ -28,6 +28,7 @@ func Backend() *backend {
 		Paths: framework.PathAppend(
 			accountsPaths(&b),
 			paymentsPaths(&b),
+			signTransactionsPaths(&b),
 		),
 		PathsSpecial: &logical.Paths{},
 		Secrets:      []*framework.Secret{},
