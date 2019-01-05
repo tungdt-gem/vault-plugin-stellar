@@ -16,6 +16,17 @@ func Factory(ctx context.Context, c *logical.BackendConfig) (logical.Backend, er
 	return b, nil
 }
 
+func FactoryType(backendType logical.BackendType) logical.Factory {
+	return func(ctx context.Context, conf *logical.BackendConfig) (logical.Backend, error) {
+		b := backend()
+		b.BackendType = backendType
+		if err := b.Setup(ctx, conf); err != nil {
+			return nil, err
+		}
+		return b, nil
+	}
+}
+
 type stellarBackend struct {
 	*framework.Backend
 }

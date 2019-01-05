@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/hashicorp/vault/logical"
 	"github.com/tungdt-gem/vault-plugin-stellar"
 	"log"
 	"os"
@@ -17,8 +18,10 @@ func main() {
 	tlsConfig := apiClientMeta.GetTLSConfig()
 	tlsProviderFunc := pluginutil.VaultPluginTLSProvider(tlsConfig)
 
+	factoryFunc := stellar.FactoryType(logical.TypeLogical)
+
 	err := plugin.Serve(&plugin.ServeOpts{
-		BackendFactoryFunc: stellar.Factory,
+		BackendFactoryFunc: factoryFunc,
 		TLSProviderFunc:    tlsProviderFunc,
 	})
 	if err != nil {
