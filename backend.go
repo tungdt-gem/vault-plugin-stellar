@@ -32,7 +32,7 @@ type stellarBackend struct {
 }
 
 func backend() *stellarBackend {
-	b := new(stellarBackend)
+	var b stellarBackend
 
 	b.Backend = &framework.Backend{
 		Help:        backendHelp,
@@ -40,13 +40,13 @@ func backend() *stellarBackend {
 		Secrets:      []*framework.Secret{},
 		PathsSpecial: &logical.Paths{},
 		Paths: framework.PathAppend(
-			accountsPaths(b),
-			paymentsPaths(b),
-			signTransactionsPaths(b),
+			accountsPaths(&b),
+			paymentsPaths(&b),
+			signTransactionsPaths(&b),
 		),
 	}
 
-	return b
+	return &b
 }
 
 const (
