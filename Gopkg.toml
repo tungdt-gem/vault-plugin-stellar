@@ -24,9 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-ls
-
-
 [[constraint]]
   branch = "master"
   name = "github.com/stellar/go"
