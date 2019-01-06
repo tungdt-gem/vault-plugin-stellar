@@ -37,7 +37,6 @@ func Backend() *backend {
 		Help: "",
 		Paths: framework.PathAppend(
 			accountsPaths(&b),
-			paymentsPaths(&b),
 			signTransactionsPaths(&b),
 		),
 		Secrets:     []*framework.Secret{},

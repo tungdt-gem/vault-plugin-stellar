@@ -60,26 +60,26 @@ func TestBackend_createAccount(t *testing.T) {
 	createAccount(td, accountName, t)
 }
 
-func TestBackend_submitPayment(t *testing.T) {
-
-	td := setupTest(t)
-	createAccount(td, "testSourceAccount", t)
-	createAccount(td, "testDestinationAccount", t)
-
-	respData := createPayment(td, "testSourceAccount", "testDestinationAccount", "35", t)
-
-	signedTx, ok := respData["signedTx"]
-	if !ok {
-		t.Fatalf("expected signedTx data not present in createPayment")
-	}
-
-	response, err := td.Client.SubmitTransaction(signedTx.(string))
-	if err != nil {
-		t.Fatalf("failed to submit transaction to testnet: %v", ErrorString(err))
-	}
-
-	t.Logf("transaction posted in ledger: %v", response.Ledger)
-}
+//func TestBackend_submitPayment(t *testing.T) {
+//
+//	td := setupTest(t)
+//	createAccount(td, "testSourceAccount", t)
+//	createAccount(td, "testDestinationAccount", t)
+//
+//	respData := createPayment(td, "testSourceAccount", "testDestinationAccount", "35", t)
+//
+//	signedTx, ok := respData["signedTx"]
+//	if !ok {
+//		t.Fatalf("expected signedTx data not present in createPayment")
+//	}
+//
+//	response, err := td.Client.SubmitTransaction(signedTx.(string))
+//	if err != nil {
+//		t.Fatalf("failed to submit transaction to testnet: %v", ErrorString(err))
+//	}
+//
+//	t.Logf("transaction posted in ledger: %v", response.Ledger)
+//}
 
 func TestBackend_signSingleTransaction(t *testing.T) {
 	td := setupTest(t)
@@ -93,27 +93,27 @@ func TestBackend_signSingleTransaction(t *testing.T) {
 	log.Println("Signed Signatures:", respData)
 }
 
-func TestBackend_submitPaymentUsingChannel(t *testing.T) {
-
-	td := setupTest(t)
-	createAccount(td, "testSourceAccount", t)
-	createAccount(td, "testDestinationAccount", t)
-	createAccount(td, "testPaymentChannelAccount", t)
-
-	respData := createPaymentWithChannel(td, "testSourceAccount", "testDestinationAccount", "testPaymentChannelAccount", "35", t)
-
-	signedTx, ok := respData["signedTx"]
-	if !ok {
-		t.Fatalf("expected signedTx data not present in createPayment")
-	}
-
-	response, err := td.Client.SubmitTransaction(signedTx.(string))
-	if err != nil {
-		t.Fatalf("failed to submit transaction to testnet: %v", ErrorString(err))
-	}
-
-	t.Logf("transaction posted in ledger: %v", response.Ledger)
-}
+//func TestBackend_submitPaymentUsingChannel(t *testing.T) {
+//
+//	td := setupTest(t)
+//	createAccount(td, "testSourceAccount", t)
+//	createAccount(td, "testDestinationAccount", t)
+//	createAccount(td, "testPaymentChannelAccount", t)
+//
+//	respData := createPaymentWithChannel(td, "testSourceAccount", "testDestinationAccount", "testPaymentChannelAccount", "35", t)
+//
+//	signedTx, ok := respData["signedTx"]
+//	if !ok {
+//		t.Fatalf("expected signedTx data not present in createPayment")
+//	}
+//
+//	response, err := td.Client.SubmitTransaction(signedTx.(string))
+//	if err != nil {
+//		t.Fatalf("failed to submit transaction to testnet: %v", ErrorString(err))
+//	}
+//
+//	t.Logf("transaction posted in ledger: %v", response.Ledger)
+//}
 
 func createAccount(td *testData, accountName string, t *testing.T) {
 	d :=
@@ -166,57 +166,57 @@ func signTransaction(td *testData, txHash string, accounts []string, t *testing.
 	return resp.Data
 }
 
-func createPayment(td *testData, sourceAccountName string, destinationAccountName string, amount string, t *testing.T) map[string]interface{} {
-	d :=
-		map[string]interface{}{
-			"source":      sourceAccountName,
-			"destination": destinationAccountName,
-			"amount":      amount,
-		}
-	resp, err := td.B.HandleRequest(context.Background(), &logical.Request{
-		Operation: logical.CreateOperation,
-		Path:      fmt.Sprintf("payments"),
-		Data:      d,
-		Storage:   td.S,
-	})
-	if err != nil {
-		t.Fatalf("failed to create payment: %v", err)
-	}
-	if resp.IsError() {
-		t.Fatal(resp.Error())
-	}
-	if resp == nil {
-		t.Fatal("response is nil")
-	}
-	t.Log(resp.Data)
-
-	return resp.Data
-}
-
-func createPaymentWithChannel(td *testData, sourceAccountName string, destinationAccountName string, paymentChannelAccountName string, amount string, t *testing.T) map[string]interface{} {
-	d :=
-		map[string]interface{}{
-			"source":         sourceAccountName,
-			"destination":    destinationAccountName,
-			"paymentChannel": paymentChannelAccountName,
-			"amount":         amount,
-		}
-	resp, err := td.B.HandleRequest(context.Background(), &logical.Request{
-		Operation: logical.CreateOperation,
-		Path:      fmt.Sprintf("payments"),
-		Data:      d,
-		Storage:   td.S,
-	})
-	if err != nil {
-		t.Fatalf("failed to create payment: %v", err)
-	}
-	if resp.IsError() {
-		t.Fatal(resp.Error())
-	}
-	if resp == nil {
-		t.Fatal("response is nil")
-	}
-	t.Log(resp.Data)
-
-	return resp.Data
-}
+//func createPayment(td *testData, sourceAccountName string, destinationAccountName string, amount string, t *testing.T) map[string]interface{} {
+//	d :=
+//		map[string]interface{}{
+//			"source":      sourceAccountName,
+//			"destination": destinationAccountName,
+//			"amount":      amount,
+//		}
+//	resp, err := td.B.HandleRequest(context.Background(), &logical.Request{
+//		Operation: logical.CreateOperation,
+//		Path:      fmt.Sprintf("payments"),
+//		Data:      d,
+//		Storage:   td.S,
+//	})
+//	if err != nil {
+//		t.Fatalf("failed to create payment: %v", err)
+//	}
+//	if resp.IsError() {
+//		t.Fatal(resp.Error())
+//	}
+//	if resp == nil {
+//		t.Fatal("response is nil")
+//	}
+//	t.Log(resp.Data)
+//
+//	return resp.Data
+//}
+//
+//func createPaymentWithChannel(td *testData, sourceAccountName string, destinationAccountName string, paymentChannelAccountName string, amount string, t *testing.T) map[string]interface{} {
+//	d :=
+//		map[string]interface{}{
+//			"source":         sourceAccountName,
+//			"destination":    destinationAccountName,
+//			"paymentChannel": paymentChannelAccountName,
+//			"amount":         amount,
+//		}
+//	resp, err := td.B.HandleRequest(context.Background(), &logical.Request{
+//		Operation: logical.CreateOperation,
+//		Path:      fmt.Sprintf("payments"),
+//		Data:      d,
+//		Storage:   td.S,
+//	})
+//	if err != nil {
+//		t.Fatalf("failed to create payment: %v", err)
+//	}
+//	if resp.IsError() {
+//		t.Fatal(resp.Error())
+//	}
+//	if resp == nil {
+//		t.Fatal("response is nil")
+//	}
+//	t.Log(resp.Data)
+//
+//	return resp.Data
+//}

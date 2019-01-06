@@ -3,14 +3,11 @@ package stellar
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/hashicorp/vault/logical"
 	"github.com/hashicorp/vault/logical/framework"
-	"github.com/stellar/go/clients/horizon"
 	"github.com/stellar/go/keypair"
 )
 
@@ -67,15 +64,6 @@ func (b *backend) createAccount(ctx context.Context, req *logical.Request, d *fr
 
 	log.Print("Public key : " + address)
 
-	// Prod anchor
-	//err = fundAccount(address)
-
-	// Testnet
-	err = fundTestAccount(address)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	accountJSON := &Account{Address: address,
 		Seed: seed}
 
@@ -100,23 +88,18 @@ func (b *backend) createAccount(ctx context.Context, req *logical.Request, d *fr
 func (b *backend) readAccount(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 
 	vaultAccount, err := b.readVaultAccount(ctx, req, req.Path)
-	address := &vaultAccount.Address
-
-	stellarAccount, err := horizon.DefaultTestNetClient.LoadAccount(*address)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Balances for address:", address)
-	for _, balance := range stellarAccount.Balances {
-		log.Println(balance)
-	}
+	address := &vaultAccount.Address
+	seed := &vaultAccount.Seed
 
 	log.Print("Returning account...")
 	return &logical.Response{
 		Data: map[string]interface{}{
 			"address":  address,
-			"balances": stellarAccount.Balances,
+			"seed": seed,
 		},
 	}, nil
 }
@@ -140,33 +123,4 @@ func (b *backend) readVaultAccount(ctx context.Context, req *logical.Request, pa
 	}
 
 	return &account, err
-}
-
-func logBalances(account Account) {
-	address := &account.Address
-
-	stellarAccount, err := horizon.DefaultTestNetClient.LoadAccount(*address)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Balances for address:", address)
-	for _, balance := range stellarAccount.Balances {
-		log.Println(balance)
-	}
-	log.Print("Returning account...")
-}
-
-func fundTestAccount(address string) error {
-	resp, err := http.Get("https://horizon-testnet.stellar.org/friendbot?addr=" + address)
-	if err != nil {
-		return err
-	}
-
-	defer resp.Body.Close()
-
-	if _, err := ioutil.ReadAll(resp.Body); err != nil {
-		return err
-	}
-
-	return nil
 }
