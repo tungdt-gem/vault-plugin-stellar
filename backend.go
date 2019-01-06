@@ -7,18 +7,20 @@ import (
 	"github.com/hashicorp/vault/logical/framework"
 )
 
-// Factory is used by framework
-func Factory(ctx context.Context, c *logical.BackendConfig) (logical.Backend, error) {
-	b := backend()
-	if err := b.Setup(ctx, c); err != nil {
+// Factory returns a new backend as logical.Backend.
+func Factory(ctx context.Context, conf *logical.BackendConfig) (logical.Backend, error) {
+	b := Backend()
+	if err := b.Setup(ctx, conf); err != nil {
 		return nil, err
 	}
 	return b, nil
 }
 
+// FactoryType is a wrapper func that allows the Factory func to specify
+// the backend type for the mock backend plugin instance.
 func FactoryType(backendType logical.BackendType) logical.Factory {
 	return func(ctx context.Context, conf *logical.BackendConfig) (logical.Backend, error) {
-		b := backend()
+		b := Backend()
 		b.BackendType = backendType
 		if err := b.Setup(ctx, conf); err != nil {
 			return nil, err
@@ -27,30 +29,24 @@ func FactoryType(backendType logical.BackendType) logical.Factory {
 	}
 }
 
-type stellarBackend struct {
-	*framework.Backend
-}
-
-func backend() *stellarBackend {
-	var b stellarBackend
+// Backend returns a private embedded struct of framework.Backend.
+func Backend() *backend {
+	var b backend
 
 	b.Backend = &framework.Backend{
-		Help:        backendHelp,
-		BackendType:  logical.TypeLogical,
-		Secrets:      []*framework.Secret{},
-		PathsSpecial: &logical.Paths{},
+		Help: "",
 		Paths: framework.PathAppend(
 			accountsPaths(&b),
 			paymentsPaths(&b),
 			signTransactionsPaths(&b),
 		),
+		Secrets:     []*framework.Secret{},
+		BackendType: logical.TypeLogical,
 	}
-
 	return &b
 }
 
-const (
-	backendHelp = `
-The Stellar backend plugin allows create, make payment and sign transaction using StellarGoSDK
-`
-)
+
+type backend struct {
+	*framework.Backend
+}

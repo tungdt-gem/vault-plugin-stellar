@@ -34,7 +34,7 @@ func setupTest(t *testing.T) *testData {
 }
 
 func getTestBackend(t *testing.T) (logical.Backend, logical.Storage) {
-	b := backend()
+	b := Backend()
 
 
 	config := &logical.BackendConfig{

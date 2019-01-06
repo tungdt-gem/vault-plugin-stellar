@@ -12,11 +12,10 @@ import (
 )
 
 // Register the callbacks for the paths exposed by these functions
-func signTransactionsPaths(b *stellarBackend) []*framework.Path {
+func signTransactionsPaths(b *backend) []*framework.Path {
 	return []*framework.Path{
 		&framework.Path{
 			Pattern:      "signTransactions",
-			HelpSynopsis: "Sign a Stellar Transaction",
 			Fields: map[string]*framework.FieldSchema{
 				"txHash": &framework.FieldSchema {
 					Type:        framework.TypeString,
@@ -36,7 +35,7 @@ func signTransactionsPaths(b *stellarBackend) []*framework.Path {
 }
 
 // Sign transaction with required signers and return signed payload.
-func (b *stellarBackend) signTransaction(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
+func (b *backend) signTransaction(ctx context.Context, req *logical.Request, d *framework.FieldData) (*logical.Response, error) {
 	// Validate we didn't get extra fields
 	err := validateFields(req, d)
 	if err != nil {
